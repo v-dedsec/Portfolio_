@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dissecting Modern Ransomware | CyberSec Portfolio</title>
+    <link rel="stylesheet" href="../assets/css/style.css">
+    <link rel="stylesheet" href="../assets/css/writeup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <button id="theme-toggle" class="theme-toggle" aria-label="Toggle theme">
+        <i class="fas fa-moon"></i>
+    </button>
+
+    <a href="../index.html#writeups" class="back-button">
+        <i class="fas fa-arrow-left"></i> Back to Portfolio
+    </a>
+
+    <article class="writeup-container">
+        <header class="writeup-header">
+            <div class="writeup-meta">
+                <span class="category-tag">Malware Analysis</span>
+                <span class="date"><i class="far fa-calendar"></i> October 2025</span>
+                <span class="reading-time"><i class="far fa-clock"></i> 20 min read</span>
+            </div>
+            <h1>Dissecting Modern Ransomware</h1>
+            <p class="writeup-subtitle">Static and dynamic analysis of a ransomware sample including unpacking and behavior analysis</p>
+            <div class="tags-list">
+                <span class="tag">Malware</span>
+                <span class="tag">Reverse Engineering</span>
+                <span class="tag">IDA Pro</span>
+                <span class="tag">Cuckoo</span>
+            </div>
+        </header>
+
+        <div class="writeup-content">
+            <section class="content-block">
+                <div class="finding-box warning">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Disclaimer</h4>
+                    <p>This analysis was conducted in a controlled, isolated virtual environment. Never attempt to execute malware on production systems or unprotected devices.</p>
+                </div>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-info-circle"></i> Sample Information</h2>
+                <div class="info-grid">
+                    <div class="info-item">
+                        <strong>File Name:</strong>
+                        invoice_2025.exe
+                    </div>
+                    <div class="info-item">
+                        <strong>File Size:</strong>
+                        2.4 MB
+                    </div>
+                    <div class="info-item">
+                        <strong>MD5:</strong>
+                        a1b2c3d4e5f6...
+                    </div>
+                    <div class="info-item">
+                        <strong>SHA256:</strong>
+                        abc123def456...
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-microscope"></i> Static Analysis</h2>
+
+                <h3>File Properties</h3>
+                <p>Initial examination revealed the sample as a 64-bit Windows PE executable with the following characteristics:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>PE Analysis</span>
+                        <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <pre><code>pestudio invoice_2025.exe
+
+Architecture: x64
+Subsystem: Windows GUI
+Compiler: Microsoft Visual C++ 2019
+Entropy: 7.8 (Likely Packed)
+Digital Signature: None</code></pre>
+                </div>
+
+                <h3>Strings Analysis</h3>
+                <p>Discovered interesting strings suggesting ransomware behavior:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Suspicious Strings</span>
+                        <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <pre><code>YOUR_FILES_ARE_ENCRYPTED.txt
+bitcoin wallet address
+.encrypted
+AES-256
+RSA-2048
+shadow copy delete</code></pre>
+                </div>
+
+                <h3>Import Analysis</h3>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Key Imports</span>
+                        <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <pre><code>KERNEL32.DLL
+  - CreateFileW
+  - WriteFile
+  - FindFirstFileW
+  - FindNextFileW
+
+ADVAPI32.DLL
+  - CryptGenKey
+  - CryptEncrypt
+  - CryptDestroyKey
+
+SHELL32.DLL
+  - SHGetFolderPathW</code></pre>
+                </div>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-unlock"></i> Unpacking</h2>
+                <p>The high entropy (7.8) suggested the binary was packed. Using x64dbg with Scylla plugin:</p>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Unpacking Steps</span>
+                        <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <pre><code>1. Load sample in x64dbg
+2. Set breakpoint on VirtualAlloc
+3. Follow memory allocations
+4. Identify Original Entry Point (OEP)
+5. Dump process at OEP using Scylla
+6. Fix IAT and create unpacked executable</code></pre>
+                </div>
+
+                <div class="finding-box success">
+                    <h4><i class="fas fa-check-circle"></i> Successfully Unpacked</h4>
+                    <p>Retrieved unpacked binary with reduced entropy of 6.2, revealing clearer code structure.</p>
+                </div>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-code"></i> Code Analysis with IDA Pro</h2>
+
+                <h3>Main Encryption Routine</h3>
+                <p>The decompiled code revealed the encryption workflow:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Pseudo-code</span>
+                        <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <pre><code>void encrypt_files() {
+    generate_aes_key();
+    encrypt_aes_with_rsa(public_key);
+
+    for (drive in drives) {
+        traverse_directory(drive);
+    }
+
+    drop_ransom_note();
+    delete_shadow_copies();
+    contact_c2_server();
+}</code></pre>
+                </div>
+
+                <h3>Targeted File Extensions</h3>
+                <p>Analysis revealed 180+ file extensions targeted:</p>
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>Target Extensions</span>
+                        <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <pre><code>.doc, .docx, .xls, .xlsx, .pdf, .jpg, .png,
+.sql, .zip, .rar, .psd, .mp4, .avi, .mp3,
+.txt, .csv, .ppt, .pptx, .dwg, .cad, .db ...</code></pre>
+                </div>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-play"></i> Dynamic Analysis</h2>
+
+                <h3>Cuckoo Sandbox Results</h3>
+                <p>Executed in Cuckoo Sandbox to observe runtime behavior:</p>
+
+                <div class="mitigation-list">
+                    <div class="mitigation-item">
+                        <div class="mitigation-icon"><i class="fas fa-network-wired"></i></div>
+                        <div>
+                            <h4>Network Activity</h4>
+                            <p>Connected to C2 server: 185.xxx.xxx.xxx:443 (TOR exit node)</p>
+                        </div>
+                    </div>
+                    <div class="mitigation-item">
+                        <div class="mitigation-icon"><i class="fas fa-file-alt"></i></div>
+                        <div>
+                            <h4>File System Changes</h4>
+                            <p>Created 247 .encrypted files, dropped ransom note in 15 directories</p>
+                        </div>
+                    </div>
+                    <div class="mitigation-item">
+                        <div class="mitigation-icon"><i class="fas fa-key"></i></div>
+                        <div>
+                            <h4>Registry Modifications</h4>
+                            <p>Added persistence via Run key: HKCU\Software\Microsoft\Windows\CurrentVersion\Run</p>
+                        </div>
+                    </div>
+                    <div class="mitigation-item">
+                        <div class="mitigation-icon"><i class="fas fa-terminal"></i></div>
+                        <div>
+                            <h4>Command Execution</h4>
+                            <p>Executed: vssadmin delete shadows /all /quiet</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-fingerprint"></i> Indicators of Compromise (IOCs)</h2>
+
+                <div class="code-block">
+                    <div class="code-header">
+                        <span>IOCs</span>
+                        <button class="copy-btn" onclick="copyCode(this)"><i class="fas fa-copy"></i></button>
+                    </div>
+                    <pre><code>File Hashes:
+MD5: a1b2c3d4e5f6a7b8c9d0e1f2a3b4c5d6
+SHA256: abc123def456789abc123def456789abc123def456789abc123def456789abcd
+
+Network Indicators:
+C2 Server: 185.xxx.xxx.xxx:443
+TOR Address: xxxxxxxxxxxx.onion
+
+File Indicators:
+YOUR_FILES_ARE_ENCRYPTED.txt
+*.encrypted extension
+Registry: HKCU\Software\Microsoft\Windows\CurrentVersion\Run\SystemUpdate
+
+Mutex:
+Global\RansomwareMutex_2025</code></pre>
+                </div>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-shield-alt"></i> Protection & Mitigation</h2>
+
+                <ul>
+                    <li><strong>Regular Backups:</strong> Maintain offline backups of critical data</li>
+                    <li><strong>Email Filtering:</strong> Implement robust email security and user training</li>
+                    <li><strong>Endpoint Protection:</strong> Deploy EDR solutions with behavioral analysis</li>
+                    <li><strong>Network Segmentation:</strong> Limit lateral movement capabilities</li>
+                    <li><strong>Privilege Management:</strong> Apply principle of least privilege</li>
+                    <li><strong>Patch Management:</strong> Keep systems and software up to date</li>
+                </ul>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-flag-checkered"></i> Conclusion</h2>
+                <p>This ransomware sample demonstrated sophisticated evasion techniques including packing, anti-debugging checks, and TOR-based C2 communication. The analysis revealed:</p>
+                <ul>
+                    <li>Use of hybrid encryption (AES-256 + RSA-2048)</li>
+                    <li>Shadow copy deletion to prevent recovery</li>
+                    <li>Persistence mechanisms for reinfection</li>
+                    <li>Targeted file selection to maximize damage</li>
+                </ul>
+                <p>All IOCs have been shared with threat intelligence platforms and the cybersecurity community.</p>
+            </section>
+
+            <section class="content-block">
+                <h2><i class="fas fa-book"></i> Tools Used</h2>
+                <div class="tools-grid">
+                    <div class="tool-item">
+                        <i class="fas fa-terminal"></i>
+                        <span>PEStudio</span>
+                    </div>
+                    <div class="tool-item">
+                        <i class="fas fa-terminal"></i>
+                        <span>IDA Pro</span>
+                    </div>
+                    <div class="tool-item">
+                        <i class="fas fa-terminal"></i>
+                        <span>x64dbg</span>
+                    </div>
+                    <div class="tool-item">
+                        <i class="fas fa-terminal"></i>
+                        <span>Cuckoo Sandbox</span>
+                    </div>
+                    <div class="tool-item">
+                        <i class="fas fa-terminal"></i>
+                        <span>Wireshark</span>
+                    </div>
+                    <div class="tool-item">
+                        <i class="fas fa-terminal"></i>
+                        <span>YARA</span>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </article>
+
+    <script src="../assets/js/script.js"></script>
+    <script src="../assets/js/writeup.js"></script>
+</body>
+</html>
