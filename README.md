@@ -37,9 +37,9 @@ A cyberpunk-themed personal portfolio website for cybersecurity professionals, f
 - Quick stats (CTF challenges, tools, vulnerabilities)
 
 ### 2. Write-ups
-- Technical blog posts and CTF write-ups
-- Categories: Web Security, CTF, Malware Analysis, Active Directory, Network Security
-- Full individual pages with syntax highlighting
+- Technical blog posts and CTF write-ups published on **Medium**
+- Categories: Web Security, CTFs, Malware Analysis, Active Directory, Network Security
+- Each write-up includes detailed explanations, screenshots, and syntax-highlighted code blocks
 
 ### 3. Projects
 - Security tools and automation frameworks
@@ -81,10 +81,8 @@ Edit CSS variables in `assets/css/style.css`:
 4. Customize stats (lines 78-98)
 
 ### Adding Write-ups
-1. Create a new HTML file in the `writeups/` folder
-2. Copy the structure from existing write-ups
-3. Add a new card in `index.html` (section #writeups)
-4. Update metadata (category, date, tags)
+1. Add a new card in `index.html` (section #writeups)
+2. Update metadata (category, date, tags)
 
 ### Theme Toggle
 - Default theme: Dark Mode
