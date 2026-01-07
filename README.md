@@ -24,14 +24,8 @@ A cyberpunk-themed personal portfolio website for cybersecurity professionals, f
 │   ├── js/
 │   │   ├── script.js          # Main JavaScript (navigation, theme toggle)
 │   │   └── writeup.js         # Write-up page scripts (copy code, TOC)
-│   └── images/                # Image assets (add your own)
-├── writeups/                  # Technical write-up HTML pages
-│   ├── sql-injection-advanced.html
-│   ├── htb-machine-analysis.html
-│   ├── ransomware-analysis.html
-│   ├── ad-lateral-movement.html
-│   ├── xss-to-account-takeover.html
-│   └── pivoting-techniques.html
+│── images/                # Image assets (add your own)
+├
 └── README.md
 ```
 
