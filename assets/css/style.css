@@ -702,7 +702,20 @@ body {
 /* ===================================
    Responsive Design
    =================================== */
-@media (max-width: 1024px) {
+
+/* Desktop/Laptop (1024px - 1199px) */
+@media (max-width: 1199px) {
+    .main-content {
+        padding: 3rem 2.5rem;
+    }
+}
+
+/* Tablet Landscape (992px - 1023px) */
+@media (max-width: 1023px) {
+    :root {
+        --sidebar-width: 260px;
+    }
+
     .main-content {
         padding: 3rem 2rem;
     }
@@ -710,11 +723,24 @@ body {
     .section-header h1 {
         font-size: 2.5rem;
     }
+
+    .writeups-grid,
+    .projects-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    .interests-grid,
+    .skills-container {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    }
 }
 
-@media (max-width: 768px) {
+/* Tablet Portrait (768px - 991px) */
+@media (max-width: 991px) {
     .sidebar {
         transform: translateX(-100%);
+        width: 280px;
+        box-shadow: 2px 0 10px rgba(0, 0, 0, 0.5);
     }
 
     .sidebar.active {
@@ -723,7 +749,7 @@ body {
 
     .main-content {
         margin-left: 0;
-        padding: 6rem 1.5rem 2rem;
+        padding: 6rem 2rem 2rem;
     }
 
     .mobile-toggle {
@@ -738,31 +764,353 @@ body {
     }
 
     .section-header h1 {
-        font-size: 2rem;
+        font-size: 2.2rem;
     }
 
     .writeups-grid,
-    .projects-grid {
+    .projects-grid,
+    .interests-grid,
+    .skills-container {
         grid-template-columns: 1fr;
     }
 
     .quick-stats {
-        grid-template-columns: 1fr;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    }
+
+    .stat-card {
+        justify-content: center;
+    }
+
+    .project-links {
+        flex-direction: column;
+    }
+
+    .btn-link {
+        justify-content: center;
     }
 }
 
-@media (max-width: 480px) {
+/* Mobile Landscape (576px - 767px) */
+@media (max-width: 767px) {
+    .main-content {
+        padding: 5.5rem 1.5rem 2rem;
+    }
+
+    .section-header h1 {
+        font-size: 2rem;
+    }
+
+    .header-line {
+        width: 100px;
+    }
+
     .intro-box h2 {
-        font-size: 1.5rem;
+        font-size: 1.75rem;
     }
 
     .intro-box p {
         font-size: 1rem;
     }
 
+    .quick-stats {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .stat-card {
+        padding: 1.25rem;
+    }
+
+    .stat-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .stat-info h3 {
+        font-size: 1.75rem;
+    }
+
+    .writeup-card,
+    .project-card,
+    .interest-card {
+        padding: 1.25rem;
+    }
+
+    .card-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .social-links {
+        gap: 0.75rem;
+    }
+
+    .social-icon {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+/* Mobile Portrait (480px - 575px) */
+@media (max-width: 575px) {
+    .theme-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+    }
+
+    .mobile-toggle {
+        width: 45px;
+        height: 45px;
+        font-size: 1rem;
+    }
+
+    .main-content {
+        padding: 5rem 1.25rem 1.5rem;
+    }
+
+    .section-header {
+        margin-bottom: 2rem;
+    }
+
+    .section-header h1 {
+        font-size: 1.75rem;
+    }
+
+    .intro-box,
+    .neon-box {
+        padding: 1.25rem;
+    }
+
+    .intro-box h2 {
+        font-size: 1.5rem;
+    }
+
+    .intro-box p {
+        font-size: 0.95rem;
+    }
+
+    .writeups-grid,
+    .projects-grid,
     .interests-grid,
     .skills-container {
-        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .interest-icon {
+        width: 70px;
+        height: 70px;
+        font-size: 1.75rem;
+    }
+
+    .project-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .skill-category h3 {
+        font-size: 1.1rem;
+    }
+
+    .skill-item {
+        padding: 0.6rem;
+        font-size: 0.9rem;
+    }
+
+    .card-tags,
+    .project-tech {
+        gap: 0.4rem;
+    }
+
+    .tag,
+    .project-tech span {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.4rem;
+    }
+}
+
+/* Small Mobile (320px - 479px) */
+@media (max-width: 479px) {
+    .theme-toggle,
+    .mobile-toggle {
+        width: 40px;
+        height: 40px;
+        font-size: 0.9rem;
+    }
+
+    .theme-toggle {
+        top: 15px;
+        right: 15px;
+    }
+
+    .mobile-toggle {
+        top: 15px;
+        left: 15px;
+    }
+
+    .main-content {
+        padding: 4.5rem 1rem 1.5rem;
+    }
+
+    .section-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .header-line {
+        width: 80px;
+        height: 2px;
+    }
+
+    .sidebar-header {
+        padding: 0 1rem;
+    }
+
+    .profile-img {
+        width: 120px;
+        height: 120px;
+    }
+
+    .avatar-placeholder {
+        font-size: 2rem;
+    }
+
+    .site-title {
+        font-size: 1.25rem;
+    }
+
+    .site-tagline {
+        font-size: 0.85rem;
+    }
+
+    .nav-link {
+        padding: 0.6rem 0.75rem;
+        font-size: 0.9rem;
+    }
+
+    .social-icon {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+    }
+
+    .intro-box h2 {
+        font-size: 1.3rem;
+    }
+
+    .intro-box p,
+    .writeup-card p,
+    .project-card p,
+    .interest-card p {
+        font-size: 0.9rem;
+    }
+
+    .stat-info h3 {
+        font-size: 1.5rem;
+    }
+
+    .stat-info p {
+        font-size: 0.85rem;
+    }
+
+    .writeup-card h3,
+    .project-card h3,
+    .interest-card h3 {
+        font-size: 1.1rem;
+    }
+
+    .category-tag {
+        font-size: 0.75rem;
+        padding: 0.2rem 0.6rem;
+    }
+
+    .btn-link {
+        font-size: 0.85rem;
+        padding: 0.45rem 0.85rem;
+    }
+}
+
+/* Extra Small Mobile (< 320px) */
+@media (max-width: 319px) {
+    .main-content {
+        padding: 4rem 0.75rem 1rem;
+    }
+
+    .section-header h1 {
+        font-size: 1.35rem;
+    }
+
+    .intro-box,
+    .neon-box {
+        padding: 1rem;
+    }
+
+    .intro-box h2 {
+        font-size: 1.2rem;
+    }
+
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+}
+
+/* Landscape orientation adjustments */
+@media (max-height: 600px) and (orientation: landscape) {
+    .sidebar {
+        padding: 1rem 0;
+    }
+
+    .sidebar-header {
+        margin-bottom: 1rem;
+    }
+
+    .profile-img {
+        width: 80px;
+        height: 80px;
+    }
+
+    .avatar-placeholder {
+        font-size: 1.5rem;
+    }
+
+    .site-title {
+        font-size: 1.1rem;
+    }
+
+    .nav-link {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .social-links {
+        padding: 1rem;
+    }
+}
+
+/* Print styles */
+@media print {
+    .sidebar,
+    .theme-toggle,
+    .mobile-toggle {
+        display: none;
+    }
+
+    .main-content {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .neon-box {
+        border: 1px solid #000;
+        box-shadow: none;
+    }
+
+    body {
+        background: white;
+        color: black;
     }
 }
 

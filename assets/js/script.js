@@ -64,29 +64,51 @@ function switchSection(targetId) {
         behavior: 'smooth'
     });
 
-    if (window.innerWidth <= 768) {
-        sidebar.classList.remove('active');
+    if (window.innerWidth <= 991) {
+        const sidebar = document.getElementById('sidebar');
+        if (sidebar) {
+            sidebar.classList.remove('active');
+        }
     }
 }
 
 navLinks.forEach(link => {
     link.addEventListener('click', (e) => {
-        e.preventDefault();
-        const targetId = link.getAttribute('href').substring(1);
-        switchSection(targetId);
+        const href = link.getAttribute('href');
 
-        window.history.pushState(null, '', `#${targetId}`);
+        if (href.startsWith('#')) {
+            e.preventDefault();
+            const targetId = href.substring(1);
+            switchSection(targetId);
+            window.history.pushState(null, '', href);
+        } else if (href.includes('.html')) {
+            if (window.innerWidth <= 991) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar) {
+                    sidebar.classList.remove('active');
+                }
+            }
+        }
     });
 });
 
 window.addEventListener('popstate', () => {
-    const hash = window.location.hash.substring(1) || 'about';
-    switchSection(hash);
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        switchSection(hash);
+    }
 });
 
 window.addEventListener('load', () => {
-    const hash = window.location.hash.substring(1) || 'about';
-    switchSection(hash);
+    const hash = window.location.hash.substring(1);
+    if (hash) {
+        switchSection(hash);
+    } else {
+        const firstSection = document.querySelector('.content-section');
+        if (firstSection) {
+            firstSection.classList.add('active');
+        }
+    }
 });
 
 // ===================================
@@ -96,17 +118,19 @@ window.addEventListener('load', () => {
 const mobileToggle = document.getElementById('mobile-toggle');
 const sidebar = document.getElementById('sidebar');
 
-mobileToggle.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-});
+if (mobileToggle && sidebar) {
+    mobileToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('active');
+    });
 
-document.addEventListener('click', (e) => {
-    if (window.innerWidth <= 768) {
-        if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
-            sidebar.classList.remove('active');
+    document.addEventListener('click', (e) => {
+        if (window.innerWidth <= 991) {
+            if (!sidebar.contains(e.target) && !mobileToggle.contains(e.target)) {
+                sidebar.classList.remove('active');
+            }
         }
-    }
-});
+    });
+}
 
 // ===================================
 // Smooth Scroll Animation
