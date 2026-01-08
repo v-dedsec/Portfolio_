@@ -17,6 +17,8 @@ A cyberpunk-themed personal portfolio website for cybersecurity professionals, f
 ```
 .
 ├── index.html                 # Main portfolio page
+├── projects.html              # Make updates in this file 
+├── writeups.html              # Make updates in this file 
 ├── assets/
 │   ├── css/
 │   │   ├── style.css          # Main stylesheet with cyberpunk theme
